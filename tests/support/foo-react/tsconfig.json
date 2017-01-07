@@ -1,7 +1,7 @@
 {
 	"version": "1.6.2",
 	"compilerOptions": {
-		"target": "es5",
+		"target": "es2015",
 		"module": "umd",
 		"jsx": "react",
 		"rootDir": ".",

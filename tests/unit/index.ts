@@ -60,12 +60,12 @@ registerSuite({
 			assert.notInclude(contents, `module 'foo/index'`);
 		});
 	},
-	'project with tsx main file': function () {
+	'project with tsx main file and es6 target': function () {
 		return generate({
 			name: '__foo-react',
 			project: 'tests/support/foo-react',
 			out: 'tmp/foo.config.d.ts',
-			main: 'index'
+			main: '__foo-react/index'
 		}).then(function () {
 			const contents = fs.readFileSync('tmp/foo.config.d.ts', { encoding: 'utf8' });
 			assert(contents, 'foo.config.d.ts should exist and have contents');
@@ -73,6 +73,7 @@ registerSuite({
 			assert.include(contents, `module '__foo-react/Bar'`);
 			assert.include(contents, `module '__foo-react/baz'`);
 			assert.include(contents, `module '__foo-react'`);
+			assert.include(contents, `export * from '__foo-react/index'`);
 		});
 	},
 	'es6 main module': function () {
