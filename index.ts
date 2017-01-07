@@ -313,7 +313,9 @@ export default function generate(options: Options): Promise<void> {
 					output.write(`export * from '${options.main}';` + eol);
 				}
 			} else {
-				output.write(`import main = require('${options.main}');` + eol + indent);
+			 	// TODO does this handle the commonjs relative import use case properly?
+				const mainModule = `${options.name}/${options.main}`;
+				output.write(`import main = require('${mainModule}');` + eol + indent);
 				output.write('export = main;' + eol);
 			}
 			output.write('}' + eol);
@@ -351,6 +353,9 @@ export default function generate(options: Options): Promise<void> {
 					const text = node.text;
 					if (text.charAt(0) === '.') {
 						return ` '${filenameToMid(pathUtil.join(pathUtil.dirname(sourceModuleId), text))}'`;
+					}
+					else if (options.name) {
+						return ` '${filenameToMid(pathUtil.join(options.name, text))}'`;
 					}
 				}
 			});
