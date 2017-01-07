@@ -60,6 +60,31 @@ registerSuite({
 			assert.notInclude(contents, `module 'foo/index'`);
 		});
 	},
+	'project with outDir and rootDir - directory handling stress test': function () {
+		// having the extra "sub" directory in this project makes sure that we
+		// respect the rootDir option.  This project also has an outDir so this
+		// stresses our path-handling logic - if we mix up the directories, it'll
+		// show in the output module names.
+		//
+		// This project also includes a tsx file and uses absolute paths, for extra
+		// fun.
+		return generate({
+			project: 'tests/support/foo-directories',
+			out: 'tmp/foo.config.d.ts',
+			main: 'tests/support/foo-directories/sub/index.tsx'
+
+		}).then(function () {
+			const contents = fs.readFileSync('tmp/foo.config.d.ts', { encoding: 'utf8' });
+			assert(contents, 'foo.config.d.ts should exist and have contents');
+			assert.include(contents, `module 'sub/index'`);
+			assert.include(contents, `module 'sub/Bar'`);
+			assert.include(contents, `module 'sub/baz'`);
+
+			// also check imports look right
+			assert.include(contents, `import Bar from 'sub/Bar'`);
+			assert.include(contents, `from 'sub/baz';`);
+		});
+	},
 	'es6 main module': function () {
 		return generate({
 			name: 'foo',
