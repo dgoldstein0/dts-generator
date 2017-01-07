@@ -283,7 +283,9 @@ export default function generate(options: Options): Promise<void> {
 			}
 
 			// We can optionally output the main module if there's something to export.
-			if (options.main && options.main === (options.name + filenameToMid(sourceFile.fileName.slice(baseDir.length, -3)))) {
+			// extension can be .ts or .tsx.  This handles both.
+			const ext = pathUtil.extname(sourceFile.fileName);
+			if (options.main && options.main === (options.name + filenameToMid(sourceFile.fileName.slice(baseDir.length, -ext.length)))) {
 				ts.forEachChild(sourceFile, function (node: ts.Node) {
 					mainExportDeclaration = mainExportDeclaration || isNodeKindExportDeclaration(node);
 					mainExportAssignment = mainExportAssignment || isNodeKindExportAssignment(node);
